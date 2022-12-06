@@ -33,16 +33,16 @@ bch_size_test = 16
 transfers = transforms.Compose([
         # transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor(),
-        # transforms.Normalize(mean=[0.022, 0.02, 0.021], std=[0.136, 0.128, 0.133])  # slide
-        transforms.Normalize(mean=[0.04, 0.037, 0.039], std=[0.179, 0.169, 0.176])  # slide_lusc
+        transforms.Normalize(mean=[0.022, 0.02, 0.021], std=[0.136, 0.128, 0.133])  # slide
+#         transforms.Normalize(mean=[0.04, 0.037, 0.039], std=[0.179, 0.169, 0.176])  # slide_lusc
     ])
 
-valid0 = Loader.PatchData.split_cluster('./data/TCGA-LUSC-slide.csv', 'Valid', transfer=transfers)
-#valid0 = Loader.PatchData.split_cluster('./data/TCGA-GBM-inpainting.csv', 'Valid', transfer=transfers)
+# valid0 = Loader.PatchData.split_cluster('./data/TCGA-LUSC-slide.csv', 'Valid', transfer=transfers)
+valid0 = Loader.PatchData.split_cluster('./data/TCGA-GBM-slide.csv', 'Valid', transfer=transfers)
 dataloader_var = DataLoader(valid0, batch_size=bch_size_test, shuffle=False, num_workers=0)
 
 model = FC()
-model.load_state_dict(torch.load('./model/epoch_140_model.pt'))
+model.load_state_dict(torch.load('./model/gbm_epoch_80_model.pt'))
 #model.load_state_dict(torch.load('./model/inpainting_patch20-200/epoch_20_model.pt'))
 model.to(device)
 # summary(model, (1024, 16, 16))
@@ -69,13 +69,13 @@ for iteration, data in enumerate(dataloader_var):
     img1 = Variable(img1, requires_grad=False).cuda()
     img2 = Variable(img2, requires_grad=False).cuda()
     img3 = Variable(img3, requires_grad=False).cuda()
-    # img4 = Variable(img4, requires_grad=False).cuda()
-    # img5 = Variable(img5, requires_grad=False).cuda()
-    # img6 = Variable(img6, requires_grad=False).cuda()
-    # img7 = Variable(img7, requires_grad=False).cuda()
-    # img8 = Variable(img8, requires_grad=False).cuda()
-    # img9 = Variable(img9, requires_grad=False).cuda()
-    # img0 = Variable(img0, requires_grad=False).cuda()
+    img4 = Variable(img4, requires_grad=False).cuda()
+    img5 = Variable(img5, requires_grad=False).cuda()
+    img6 = Variable(img6, requires_grad=False).cuda()
+    img7 = Variable(img7, requires_grad=False).cuda()
+    img8 = Variable(img8, requires_grad=False).cuda()
+    img9 = Variable(img9, requires_grad=False).cuda()
+    img0 = Variable(img0, requires_grad=False).cuda()
 
     with torch.no_grad():
         # pred_feature = pre_model(img_var)
@@ -84,19 +84,19 @@ for iteration, data in enumerate(dataloader_var):
         feature1 = pre_model_patch(img1)
         feature2 = pre_model_patch(img2)
         feature3 = pre_model_patch(img3)
-        # feature4 = pre_model_patch(img4)
-        # feature5 = pre_model_patch(img5)
-        # feature6 = pre_model_patch(img6)
-        # feature7 = pre_model_patch(img7)
-        # feature8 = pre_model_patch(img8)
-        # feature9 = pre_model_patch(img9)
-        # feature0 = pre_model_patch(img0)
-        # feature_cat = torch.cat((feature, feature1, feature2, feature3, feature4, feature5, feature6, feature7,
-        #                          feature8, feature9, feature0,), 1)
+        feature4 = pre_model_patch(img4)
+        feature5 = pre_model_patch(img5)
+        feature6 = pre_model_patch(img6)
+        feature7 = pre_model_patch(img7)
+        feature8 = pre_model_patch(img8)
+        feature9 = pre_model_patch(img9)
+        feature0 = pre_model_patch(img0)
+        feature_cat = torch.cat((feature, feature1, feature2, feature3, feature4, feature5, feature6, feature7,
+                                 feature8, feature9, feature0,), 1)
         # feature_patch = torch.cat((feature1, feature2, feature3, feature4, feature5, feature6, feature7,
         #                          feature8, feature9, feature0,), 1)
         # feature_patch = torch.cat((feature1, feature2, feature3, feature4, feature5), 1)
-        feature_patch = torch.cat((feature1, feature2, feature3), 1)
+#         feature_patch = torch.cat((feature1, feature2, feature3), 1)
         # with autograd.detect_anomaly():
         pred_test = model(feature, feature_patch)
     accuracy += concordance_index(pred_test, label_var)
