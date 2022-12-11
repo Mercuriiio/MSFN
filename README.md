@@ -8,6 +8,16 @@ The training and testing data can be found in the supplementary material, which 
 ## Models
 The pre-tained models of MSFN are available at: [models](https://drive.google.com/drive/folders/1O1htcCJMfE5UXwI4w_9WjMqzeDrrpgba?usp=sharing)
 
+## Data preprocessing
+### Obtain the slide
+```
+python ./pre_processing/slide.py
+```
+### Obtain the patches
+```
+python ./pre_processing/patch.py
+```
+
 ## Train and Test
 ```
 python train.py
