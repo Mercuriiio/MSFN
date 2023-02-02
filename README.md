@@ -18,10 +18,7 @@ python ./pre_processing/slide.py
 python ./pre_processing/patch.py
 ```
 
-## Train and Test
-```
-python train.py
-```
+## Test
 ```
 python test.py
 ```
